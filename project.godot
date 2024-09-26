@@ -17,7 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-HacksManager="*res://hacks_manager.gd"
+CheatsManager="*res://cheats/cheats_manager.gd"
 
 [input]
 

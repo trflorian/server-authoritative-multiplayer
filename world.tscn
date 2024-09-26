@@ -1,9 +1,9 @@
 [gd_scene load_steps=11 format=3 uid="uid://fkcfoilma1lc"]
 
-[ext_resource type="Script" path="res://network_manager.gd" id="1_qxjbp"]
-[ext_resource type="Script" path="res://follow_node.gd" id="2_2onsa"]
-[ext_resource type="PackedScene" uid="uid://bfrav2bbqpxug" path="res://player.tscn" id="2_2u2ss"]
-[ext_resource type="Script" path="res://v_box_container_hacks.gd" id="3_ewwy3"]
+[ext_resource type="Script" path="res://cheats/network_manager.gd" id="1_qxjbp"]
+[ext_resource type="Script" path="res://camera/follow_node.gd" id="2_2onsa"]
+[ext_resource type="PackedScene" uid="uid://bfrav2bbqpxug" path="res://player/player.tscn" id="2_2u2ss"]
+[ext_resource type="Script" path="res://cheats/v_box_container_cheats.gd" id="3_ewwy3"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_knimw"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -36,10 +36,10 @@ environment = SubResource("Environment_6gvf6")
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
 shadow_enabled = true
 
-[node name="NetworkManager" type="Node" parent="." node_paths=PackedStringArray("network_type_label", "hacks_ui", "players_parent")]
+[node name="NetworkManager" type="Node" parent="." node_paths=PackedStringArray("network_type_label", "cheats_ui", "players_parent")]
 script = ExtResource("1_qxjbp")
 network_type_label = NodePath("../UI/Panel/MarginContainer/VBoxContainer/LabelNetworkType")
-hacks_ui = NodePath("../UI/Panel/MarginContainer/VBoxContainer/VBoxContainerHacks")
+cheats_ui = NodePath("../UI/Panel/MarginContainer/VBoxContainer/VBoxContainerCheats")
 player_prefab = ExtResource("2_2u2ss")
 players_parent = NodePath("../AllPlayers")
 
@@ -67,19 +67,19 @@ text = "[network_type]"
 horizontal_alignment = 1
 clip_text = true
 
-[node name="VBoxContainerHacks" type="VBoxContainer" parent="UI/Panel/MarginContainer/VBoxContainer"]
+[node name="VBoxContainerCheats" type="VBoxContainer" parent="UI/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 script = ExtResource("3_ewwy3")
 
-[node name="CheckButtonSpeedHack" type="CheckButton" parent="UI/Panel/MarginContainer/VBoxContainer/VBoxContainerHacks"]
+[node name="CheckButtonSpeedCheat" type="CheckButton" parent="UI/Panel/MarginContainer/VBoxContainer/VBoxContainerCheats"]
 layout_mode = 2
 focus_mode = 0
-text = "Speed Hack"
+text = "Speed Boost"
 
-[node name="CheckButtonJumpHack" type="CheckButton" parent="UI/Panel/MarginContainer/VBoxContainer/VBoxContainerHacks"]
+[node name="CheckButtonJumpCheat" type="CheckButton" parent="UI/Panel/MarginContainer/VBoxContainer/VBoxContainerCheats"]
 layout_mode = 2
 focus_mode = 0
-text = "Jump Hack"
+text = "Jump Boost"
 
 [node name="Floor" type="StaticBody3D" parent="."]
 
@@ -97,5 +97,5 @@ script = ExtResource("2_2onsa")
 [node name="AllPlayers" type="Node3D" parent="."]
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("res://player.tscn")
+_spawnable_scenes = PackedStringArray("res://player/player.tscn")
 spawn_path = NodePath("../AllPlayers")

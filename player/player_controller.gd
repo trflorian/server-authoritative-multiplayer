@@ -32,8 +32,6 @@ func _ready() -> void:
 			$PlayerGhost/GhostSync.synchronized.connect(_on_check_reconcile)
 		else:
 			$PlayerGhost/GhostSync.synchronized.connect(_interpolate_other)
-			
-	
 
 func _enter_tree() -> void:
 	$InputSync.set_multiplayer_authority(int(str(name)))
@@ -99,16 +97,16 @@ func _move_player(body: CharacterBody3D, delta: float, is_jumping: bool, input_d
 
 	# Handle jump.
 	if is_jumping:
-		if body.is_on_floor() or (_is_local_player() and HacksManager.is_jump_hacking):
+		if body.is_on_floor() or (_is_local_player() and CheatsManager.is_active_cheat_jump):
 			var jump_velocity = JUMP_VELOCITY
-			if _is_local_player() and HacksManager.is_jump_hacking:
+			if _is_local_player() and CheatsManager.is_active_cheat_jump:
 				jump_velocity *= 2.0
 			body.velocity.y = jump_velocity
 	
 	var speed = SPEED
 	
 	# SIMULATE CHEATING
-	if _is_local_player() and HacksManager.is_speed_hacking:
+	if _is_local_player() and CheatsManager.is_active_cheat_speed:
 		speed *= 2.0
 
 	# Get the input direction and handle the movement/deceleration.
