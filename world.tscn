@@ -1,0 +1,101 @@
+[gd_scene load_steps=11 format=3 uid="uid://fkcfoilma1lc"]
+
+[ext_resource type="Script" path="res://network_manager.gd" id="1_qxjbp"]
+[ext_resource type="Script" path="res://follow_node.gd" id="2_2onsa"]
+[ext_resource type="PackedScene" uid="uid://bfrav2bbqpxug" path="res://player.tscn" id="2_2u2ss"]
+[ext_resource type="Script" path="res://v_box_container_hacks.gd" id="3_ewwy3"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_knimw"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_yyxua"]
+sky_material = SubResource("ProceduralSkyMaterial_knimw")
+
+[sub_resource type="Environment" id="Environment_6gvf6"]
+background_mode = 1
+background_color = Color(1, 1, 1, 1)
+sky = SubResource("Sky_yyxua")
+tonemap_mode = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4b7w8"]
+metallic_specular = 0.0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_hr28o"]
+material = SubResource("StandardMaterial3D_4b7w8")
+size = Vector2(100, 100)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_yxmpl"]
+
+[node name="World" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_6gvf6")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
+shadow_enabled = true
+
+[node name="NetworkManager" type="Node" parent="." node_paths=PackedStringArray("network_type_label", "hacks_ui", "players_parent")]
+script = ExtResource("1_qxjbp")
+network_type_label = NodePath("../UI/Panel/MarginContainer/VBoxContainer/LabelNetworkType")
+hacks_ui = NodePath("../UI/Panel/MarginContainer/VBoxContainer/VBoxContainerHacks")
+player_prefab = ExtResource("2_2u2ss")
+players_parent = NodePath("../AllPlayers")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Panel" type="PanelContainer" parent="UI"]
+offset_right = 292.0
+offset_bottom = 119.0
+
+[node name="MarginContainer" type="MarginContainer" parent="UI/Panel"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Panel/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="LabelNetworkType" type="Label" parent="UI/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "[network_type]"
+horizontal_alignment = 1
+clip_text = true
+
+[node name="VBoxContainerHacks" type="VBoxContainer" parent="UI/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("3_ewwy3")
+
+[node name="CheckButtonSpeedHack" type="CheckButton" parent="UI/Panel/MarginContainer/VBoxContainer/VBoxContainerHacks"]
+layout_mode = 2
+focus_mode = 0
+text = "Speed Hack"
+
+[node name="CheckButtonJumpHack" type="CheckButton" parent="UI/Panel/MarginContainer/VBoxContainer/VBoxContainerHacks"]
+layout_mode = 2
+focus_mode = 0
+text = "Jump Hack"
+
+[node name="Floor" type="StaticBody3D" parent="."]
+
+[node name="PlaneMesh" type="MeshInstance3D" parent="Floor"]
+mesh = SubResource("PlaneMesh_hr28o")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+shape = SubResource("WorldBoundaryShape3D_yxmpl")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 3, 5)
+script = ExtResource("2_2onsa")
+
+[node name="AllPlayers" type="Node3D" parent="."]
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://player.tscn")
+spawn_path = NodePath("../AllPlayers")
