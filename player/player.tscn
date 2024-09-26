@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://bfrav2bbqpxug"]
+[gd_scene load_steps=11 format=3 uid="uid://bfrav2bbqpxug"]
 
 [ext_resource type="Script" path="res://player/player_controller.gd" id="1_ub3x8"]
 
@@ -29,11 +29,19 @@ properties/4/spawn = true
 properties/4/replication_mode = 1
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_62wvf"]
-transparency = 1
 albedo_color = Color(0, 0.3, 1, 1)
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_ud6jc"]
 material = SubResource("StandardMaterial3D_62wvf")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4bg2w"]
+albedo_color = Color(0, 0, 0, 1)
+metallic_specular = 1.0
+roughness = 0.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_1ouek"]
+material = SubResource("StandardMaterial3D_4bg2w")
+size = Vector3(0.7, 0.2, 0.2)
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_7yws8"]
 properties/0/path = NodePath(".:input_dir_sync")
@@ -46,7 +54,7 @@ properties/2/path = NodePath(".:tick_sync")
 properties/2/spawn = true
 properties/2/replication_mode = 1
 
-[node name="Player" type="Node3D"]
+[node name="Player" type="Node3D" groups=["player"]]
 script = ExtResource("1_ub3x8")
 
 [node name="PlayerGhost" type="CharacterBody3D" parent="."]
@@ -62,7 +70,7 @@ shape = SubResource("CapsuleShape3D_ywkg8")
 
 [node name="GhostSync" type="MultiplayerSynchronizer" parent="PlayerGhost"]
 root_path = NodePath("../..")
-replication_interval = 0.1
+replication_interval = 0.05
 replication_config = SubResource("SceneReplicationConfig_jgn1b")
 
 [node name="PlayerBody" type="CharacterBody3D" parent="."]
@@ -75,6 +83,10 @@ mesh = SubResource("CapsuleMesh_ud6jc")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="PlayerBody"]
 shape = SubResource("CapsuleShape3D_ywkg8")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PlayerBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0204223, 0.459778, -0.437381)
+mesh = SubResource("BoxMesh_1ouek")
 
 [node name="InputSync" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_7yws8")

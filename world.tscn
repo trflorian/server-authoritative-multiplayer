@@ -1,9 +1,12 @@
-[gd_scene load_steps=11 format=3 uid="uid://fkcfoilma1lc"]
+[gd_scene load_steps=19 format=3 uid="uid://fkcfoilma1lc"]
 
 [ext_resource type="Script" path="res://cheats/network_manager.gd" id="1_qxjbp"]
 [ext_resource type="Script" path="res://camera/follow_node.gd" id="2_2onsa"]
 [ext_resource type="PackedScene" uid="uid://bfrav2bbqpxug" path="res://player/player.tscn" id="2_2u2ss"]
 [ext_resource type="Script" path="res://cheats/v_box_container_cheats.gd" id="3_ewwy3"]
+[ext_resource type="Script" path="res://settings/v_box_container_settings.gd" id="3_hbnai"]
+[ext_resource type="Texture2D" uid="uid://5ff3ifr8tn2j" path="res://assets/texture_01.png" id="4_nw1tp"]
+[ext_resource type="Texture2D" uid="uid://dsnylthvgqrh4" path="res://assets/texture_08.png" id="6_qa0am"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_knimw"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -14,18 +17,44 @@ sky_material = SubResource("ProceduralSkyMaterial_knimw")
 
 [sub_resource type="Environment" id="Environment_6gvf6"]
 background_mode = 1
-background_color = Color(1, 1, 1, 1)
+background_color = Color(0.733398, 0.824724, 0.999999, 1)
+background_energy_multiplier = 2.0
 sky = SubResource("Sky_yyxua")
 tonemap_mode = 2
+fog_enabled = true
+fog_mode = 1
+fog_light_color = Color(0.733257, 0.823636, 1, 1)
+fog_light_energy = 1.22
+fog_density = 1.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4b7w8"]
-metallic_specular = 0.0
+albedo_texture = ExtResource("4_nw1tp")
+uv1_scale = Vector3(50, 50, 50)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_hr28o"]
 material = SubResource("StandardMaterial3D_4b7w8")
 size = Vector2(100, 100)
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_yxmpl"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2ejnj"]
+albedo_color = Color(0.49791, 0.253137, 0.478893, 1)
+albedo_texture = ExtResource("6_qa0am")
+uv1_triplanar = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_1uv5t"]
+material = SubResource("StandardMaterial3D_2ejnj")
+size = Vector3(3, 3, 3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jdljc"]
+size = Vector3(3, 3, 3)
+
+[sub_resource type="BoxMesh" id="BoxMesh_jgt1v"]
+material = SubResource("StandardMaterial3D_2ejnj")
+size = Vector3(2, 1, 5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_m0dxs"]
+size = Vector3(2, 1, 5)
 
 [node name="World" type="Node3D"]
 
@@ -67,6 +96,21 @@ text = "[network_type]"
 horizontal_alignment = 1
 clip_text = true
 
+[node name="VBoxContainerSettings" type="VBoxContainer" parent="UI/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("3_hbnai")
+
+[node name="CheckButtonGhost" type="CheckButton" parent="UI/Panel/MarginContainer/VBoxContainer/VBoxContainerSettings"]
+layout_mode = 2
+focus_mode = 0
+text = "Show Player Ghosts"
+
+[node name="LabelCheats" type="Label" parent="UI/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Cheats"
+horizontal_alignment = 1
+clip_text = true
+
 [node name="VBoxContainerCheats" type="VBoxContainer" parent="UI/Panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 script = ExtResource("3_ewwy3")
@@ -99,3 +143,27 @@ script = ExtResource("2_2onsa")
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("res://player/player.tscn")
 spawn_path = NodePath("../AllPlayers")
+
+[node name="InteractableCube" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -5)
+mass = 0.1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="InteractableCube"]
+mesh = SubResource("BoxMesh_1uv5t")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractableCube"]
+shape = SubResource("BoxShape3D_jdljc")
+
+[node name="InteractableCube2" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 1.5, -4)
+mass = 0.1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="InteractableCube2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, -1, 0)
+mesh = SubResource("BoxMesh_jgt1v")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractableCube2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, -1, 0)
+shape = SubResource("BoxShape3D_m0dxs")

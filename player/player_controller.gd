@@ -3,7 +3,7 @@ extends Node3D
 class_name PlayerController
 
 const SPEED = 5.0
-const JUMP_VELOCITY = 6.0
+const JUMP_VELOCITY = 9.0
 
 @export var player_id: int
 
@@ -47,6 +47,7 @@ func _on_check_reconcile() -> void:
 	var delta_ticks = tick_sync - tick_sync_server
 	
 	$PlayerBody.global_position = $PlayerGhost.global_position
+	$PlayerBody.global_rotation = $PlayerGhost.global_rotation
 	$PlayerBody.velocity = linear_velocity_sync_server
 	
 	while len(input_buffer_dir) > delta_ticks:
@@ -72,6 +73,7 @@ func _interpolate_other() -> void:
 	interpolation_prev_timestamp = Time.get_ticks_msec()
 
 func _physics_process(delta: float) -> void:
+	$PlayerGhost.visible = SettingsManager.show_player_ghosts
 	
 	if _is_local_player():
 		tick_sync += 1
@@ -83,7 +85,9 @@ func _physics_process(delta: float) -> void:
 		_move_player($PlayerBody, delta, is_jumping_sync, input_dir_sync)
 	else:
 		var dt = Time.get_ticks_msec() - interpolation_prev_timestamp
-		$PlayerBody.global_position = $PlayerBody.global_position.lerp($PlayerGhost.global_position, min(1, dt/200.0))
+		$PlayerBody.global_position = $PlayerBody.global_position.lerp($PlayerGhost.global_position, min(1, dt/50.0))
+		$PlayerBody.global_rotation = $PlayerBody.global_rotation.lerp($PlayerGhost.global_rotation, min(1, dt/50.0))
+		
 	
 	if multiplayer.is_server():
 		tick_sync_server = tick_sync
@@ -118,5 +122,31 @@ func _move_player(body: CharacterBody3D, delta: float, is_jumping: bool, input_d
 	else:
 		body.velocity.x = move_toward(body.velocity.x, 0, speed)
 		body.velocity.z = move_toward(body.velocity.z, 0, speed)
+	
+	var flat_velocity = Vector3(body.velocity.x, 0.0, body.velocity.z)
+	if flat_velocity.length() > 0:
+		_look_at_target_interpolated(body, body.global_position + flat_velocity, 0.1)
+	
+	# Find the current quaternion from the current transform. 
+	#var current_quat = body.transform.basis.get_rotation_quaternion()
+	#var desired_quat: Quaternion
+	#if body.velocity.length() > 0:
+#
+		## Find the quaternion you want to interpolate towards based on the current velocity 
+		## and the maximum lean angle (say PI / 6 radians). 
+		#desired_quat = Quaternion(body.velocity.cross(Vector3(0,-1,0)).normalized(), PI / 20)
+	#else:
+		#desired_quat = Quaternion(Vector3(0,1,0), PI / 6)
+		#
+	## Calculate an interpolated quaternion (using so-called spherical linear interpolation). 
+	#var next_quat = current_quat.slerp(desired_quat, 0.5)
+#
+	## Make the character lean by updating the character's transform. 
+	#body.transform.basis = Basis(next_quat)
 
 	body.move_and_slide()
+
+func _look_at_target_interpolated(body: Node3D, look_target: Vector3, weight: float) -> void:
+	var xform := body.transform # your transform
+	xform = xform.looking_at(look_target,Vector3.UP)
+	body.transform = body.transform.interpolate_with(xform,weight)

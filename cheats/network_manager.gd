@@ -1,6 +1,7 @@
 extends Node
 
-const IP_ADDRESS := "localhost"
+const IP_ADDRESS := "172.104.235.79"
+#const IP_ADDRESS := "localhost"
 const PORT := 8765
 const MAX_CLIENTS := 4
 
@@ -12,29 +13,30 @@ const MAX_CLIENTS := 4
 
 func _ready() -> void:
 	var args = Array(OS.get_cmdline_args())
-	if args.has("server"):
-		network_type_label.text = "Server"
+	if OS.has_feature("dedicated_server") or args.has("server"):
+		network_type_label.text = "Server - " + IP_ADDRESS + ":" + str(PORT)
 		cheats_ui.visible = false
 		multiplayer.peer_connected.connect(_on_peer_connected)
 		multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 		_create_server()
+		SettingsManager.show_player_ghosts = true
 	else:
-		network_type_label.text = "Client"
+		network_type_label.text = "Client - " + IP_ADDRESS + ":" + str(PORT)
 		cheats_ui.visible = true
 		_create_client()
 
 func _create_client() -> void:
 	print("Starting client...")
-	var peer = ENetMultiplayerPeer.new()
-	peer.create_client(IP_ADDRESS, PORT)
+	var peer = WebSocketMultiplayerPeer.new()
+	peer.create_client("ws://%s:%d" % [IP_ADDRESS, PORT])
 	multiplayer.multiplayer_peer = peer
 	await multiplayer.connected_to_server
 	print("Client is connected to server!")
 
 func _create_server() -> void:
 	print("Starting server...")
-	var peer = ENetMultiplayerPeer.new()
-	peer.create_server(PORT, MAX_CLIENTS)
+	var peer = WebSocketMultiplayerPeer.new()
+	peer.create_server(PORT, "*") # TODO: add TLS options according to https://www.reddit.com/r/godot/comments/17ltxjp/comment/l1uz70s/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
 	multiplayer.multiplayer_peer = peer
 
 func _on_peer_connected(peer: int) -> void:
