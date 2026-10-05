@@ -27,6 +27,9 @@ properties/3/replication_mode = 1
 properties/4/path = NodePath(".:linear_velocity_sync_server")
 properties/4/spawn = true
 properties/4/replication_mode = 1
+properties/5/path = NodePath(".:is_on_floor_sync_server")
+properties/5/spawn = true
+properties/5/replication_mode = 1
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_62wvf"]
 albedo_color = Color(0, 0.3, 1, 1)
@@ -44,15 +47,9 @@ material = SubResource("StandardMaterial3D_4bg2w")
 size = Vector3(0.7, 0.2, 0.2)
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_7yws8"]
-properties/0/path = NodePath(".:input_dir_sync")
+properties/0/path = NodePath(".:input_buffer_sync")
 properties/0/spawn = true
 properties/0/replication_mode = 1
-properties/1/path = NodePath(".:is_jumping_sync")
-properties/1/spawn = true
-properties/1/replication_mode = 1
-properties/2/path = NodePath(".:tick_sync")
-properties/2/spawn = true
-properties/2/replication_mode = 1
 
 [node name="Player" type="Node3D" unique_id=1750218142 groups=["player"]]
 script = ExtResource("1_ub3x8")
@@ -70,7 +67,7 @@ shape = SubResource("CapsuleShape3D_ywkg8")
 
 [node name="GhostSync" type="MultiplayerSynchronizer" parent="PlayerGhost" unique_id=1992439585]
 root_path = NodePath("../..")
-replication_interval = 0.05
+replication_interval = 0.5
 replication_config = SubResource("SceneReplicationConfig_jgn1b")
 
 [node name="PlayerBody" type="CharacterBody3D" parent="." unique_id=1448845230]
