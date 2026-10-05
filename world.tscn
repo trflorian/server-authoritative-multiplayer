@@ -1,10 +1,10 @@
-[gd_scene load_steps=19 format=3 uid="uid://fkcfoilma1lc"]
+[gd_scene format=3 uid="uid://fkcfoilma1lc"]
 
-[ext_resource type="Script" path="res://cheats/network_manager.gd" id="1_qxjbp"]
-[ext_resource type="Script" path="res://camera/follow_node.gd" id="2_2onsa"]
+[ext_resource type="Script" uid="uid://dt8lqndt3d5ur" path="res://networking/network_manager.gd" id="1_qxjbp"]
+[ext_resource type="Script" uid="uid://cole0tqaq64da" path="res://camera/follow_node.gd" id="2_2onsa"]
 [ext_resource type="PackedScene" uid="uid://bfrav2bbqpxug" path="res://player/player.tscn" id="2_2u2ss"]
-[ext_resource type="Script" path="res://cheats/v_box_container_cheats.gd" id="3_ewwy3"]
-[ext_resource type="Script" path="res://settings/v_box_container_settings.gd" id="3_hbnai"]
+[ext_resource type="Script" uid="uid://cyxgxnu53hm7a" path="res://cheats/v_box_container_cheats.gd" id="3_ewwy3"]
+[ext_resource type="Script" uid="uid://o831xpe1ap5s" path="res://settings/v_box_container_settings.gd" id="3_hbnai"]
 [ext_resource type="Texture2D" uid="uid://5ff3ifr8tn2j" path="res://assets/texture_01.png" id="4_nw1tp"]
 [ext_resource type="Texture2D" uid="uid://dsnylthvgqrh4" path="res://assets/texture_08.png" id="6_qa0am"]
 
@@ -56,29 +56,29 @@ size = Vector3(2, 1, 5)
 [sub_resource type="BoxShape3D" id="BoxShape3D_m0dxs"]
 size = Vector3(2, 1, 5)
 
-[node name="World" type="Node3D"]
+[node name="World" type="Node3D" unique_id=2069485053]
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=776775131]
 environment = SubResource("Environment_6gvf6")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=965945045]
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
 shadow_enabled = true
 
-[node name="NetworkManager" type="Node" parent="." node_paths=PackedStringArray("network_type_label", "cheats_ui", "players_parent")]
+[node name="NetworkManager" type="Node" parent="." unique_id=1622226417 node_paths=PackedStringArray("network_type_label", "cheats_ui", "players_parent")]
 script = ExtResource("1_qxjbp")
 network_type_label = NodePath("../UI/Panel/MarginContainer/VBoxContainer/LabelNetworkType")
 cheats_ui = NodePath("../UI/Panel/MarginContainer/VBoxContainer/VBoxContainerCheats")
 player_prefab = ExtResource("2_2u2ss")
 players_parent = NodePath("../AllPlayers")
 
-[node name="UI" type="CanvasLayer" parent="."]
+[node name="UI" type="CanvasLayer" parent="." unique_id=2143409278]
 
-[node name="Panel" type="PanelContainer" parent="UI"]
+[node name="Panel" type="PanelContainer" parent="UI" unique_id=1149111911]
 offset_right = 292.0
 offset_bottom = 119.0
 
-[node name="MarginContainer" type="MarginContainer" parent="UI/Panel"]
+[node name="MarginContainer" type="MarginContainer" parent="UI/Panel" unique_id=1817691158]
 layout_mode = 2
 size_flags_vertical = 4
 theme_override_constants/margin_left = 10
@@ -86,84 +86,84 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/Panel/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Panel/MarginContainer" unique_id=1462529392]
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="LabelNetworkType" type="Label" parent="UI/Panel/MarginContainer/VBoxContainer"]
+[node name="LabelNetworkType" type="Label" parent="UI/Panel/MarginContainer/VBoxContainer" unique_id=581497627]
 layout_mode = 2
 text = "[network_type]"
 horizontal_alignment = 1
 clip_text = true
 
-[node name="VBoxContainerSettings" type="VBoxContainer" parent="UI/Panel/MarginContainer/VBoxContainer"]
+[node name="VBoxContainerSettings" type="VBoxContainer" parent="UI/Panel/MarginContainer/VBoxContainer" unique_id=742373152]
 layout_mode = 2
 script = ExtResource("3_hbnai")
 
-[node name="CheckButtonGhost" type="CheckButton" parent="UI/Panel/MarginContainer/VBoxContainer/VBoxContainerSettings"]
+[node name="CheckButtonGhost" type="CheckButton" parent="UI/Panel/MarginContainer/VBoxContainer/VBoxContainerSettings" unique_id=866736129]
 layout_mode = 2
 focus_mode = 0
 text = "Show Player Ghosts"
 
-[node name="LabelCheats" type="Label" parent="UI/Panel/MarginContainer/VBoxContainer"]
+[node name="LabelCheats" type="Label" parent="UI/Panel/MarginContainer/VBoxContainer" unique_id=1424160314]
 layout_mode = 2
 text = "Cheats"
 horizontal_alignment = 1
 clip_text = true
 
-[node name="VBoxContainerCheats" type="VBoxContainer" parent="UI/Panel/MarginContainer/VBoxContainer"]
+[node name="VBoxContainerCheats" type="VBoxContainer" parent="UI/Panel/MarginContainer/VBoxContainer" unique_id=1623456383]
 layout_mode = 2
 script = ExtResource("3_ewwy3")
 
-[node name="CheckButtonSpeedCheat" type="CheckButton" parent="UI/Panel/MarginContainer/VBoxContainer/VBoxContainerCheats"]
+[node name="CheckButtonSpeedCheat" type="CheckButton" parent="UI/Panel/MarginContainer/VBoxContainer/VBoxContainerCheats" unique_id=2092017691]
 layout_mode = 2
 focus_mode = 0
 text = "Speed Boost"
 
-[node name="CheckButtonJumpCheat" type="CheckButton" parent="UI/Panel/MarginContainer/VBoxContainer/VBoxContainerCheats"]
+[node name="CheckButtonJumpCheat" type="CheckButton" parent="UI/Panel/MarginContainer/VBoxContainer/VBoxContainerCheats" unique_id=1042037042]
 layout_mode = 2
 focus_mode = 0
 text = "Jump Boost"
 
-[node name="Floor" type="StaticBody3D" parent="."]
+[node name="Floor" type="StaticBody3D" parent="." unique_id=1618427850]
 
-[node name="PlaneMesh" type="MeshInstance3D" parent="Floor"]
+[node name="PlaneMesh" type="MeshInstance3D" parent="Floor" unique_id=1259240237]
 mesh = SubResource("PlaneMesh_hr28o")
 skeleton = NodePath("../..")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor" unique_id=1186702466]
 shape = SubResource("WorldBoundaryShape3D_yxmpl")
 
-[node name="Camera3D" type="Camera3D" parent="."]
+[node name="Camera3D" type="Camera3D" parent="." unique_id=628223247]
 transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 3, 5)
 script = ExtResource("2_2onsa")
 
-[node name="AllPlayers" type="Node3D" parent="."]
+[node name="AllPlayers" type="Node3D" parent="." unique_id=329461020]
 
-[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("res://player/player.tscn")
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=709993279]
+_spawnable_scenes = PackedStringArray("uid://bfrav2bbqpxug")
 spawn_path = NodePath("../AllPlayers")
 
-[node name="InteractableCube" type="RigidBody3D" parent="."]
+[node name="InteractableCube" type="RigidBody3D" parent="." unique_id=2090953342]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -5)
 mass = 0.1
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="InteractableCube"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="InteractableCube" unique_id=1808068534]
 mesh = SubResource("BoxMesh_1uv5t")
 skeleton = NodePath("../..")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractableCube"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractableCube" unique_id=1144927235]
 shape = SubResource("BoxShape3D_jdljc")
 
-[node name="InteractableCube2" type="RigidBody3D" parent="."]
+[node name="InteractableCube2" type="RigidBody3D" parent="." unique_id=1684834499]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 1.5, -4)
 mass = 0.1
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="InteractableCube2"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="InteractableCube2" unique_id=1046844372]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, -1, 0)
 mesh = SubResource("BoxMesh_jgt1v")
 skeleton = NodePath("../..")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractableCube2"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractableCube2" unique_id=798188986]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, -1, 0)
 shape = SubResource("BoxShape3D_m0dxs")

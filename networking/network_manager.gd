@@ -1,7 +1,7 @@
 extends Node
 
-const IP_ADDRESS := "172.104.235.79"
-#const IP_ADDRESS := "localhost"
+#const IP_ADDRESS := "172.104.235.79"
+const IP_ADDRESS := "localhost"
 const PORT := 8765
 const MAX_CLIENTS := 4
 
@@ -23,21 +23,33 @@ func _ready() -> void:
 	else:
 		network_type_label.text = "Client - " + IP_ADDRESS + ":" + str(PORT)
 		cheats_ui.visible = true
+		multiplayer.connected_to_server.connect(_connected_to_server)
+		multiplayer.connection_failed.connect(_connection_failed)
 		_create_client()
 
 func _create_client() -> void:
 	print("Starting client...")
 	var peer = WebSocketMultiplayerPeer.new()
-	peer.create_client("ws://%s:%d" % [IP_ADDRESS, PORT])
+	var error = peer.create_client("ws://%s:%d" % [IP_ADDRESS, PORT])
+	if error != OK:
+		push_error("Socket creation failed: ", error)
+		return
 	multiplayer.multiplayer_peer = peer
-	await multiplayer.connected_to_server
+	
+func _connected_to_server() -> void:
 	print("Client is connected to server!")
+
+func _connection_failed() -> void:
+	print("Client connection failed, retrying in a sec...")
+	await get_tree().create_timer(1).timeout
+	_create_client()
 
 func _create_server() -> void:
 	print("Starting server...")
 	var peer = WebSocketMultiplayerPeer.new()
 	peer.create_server(PORT, "*") # TODO: add TLS options according to https://www.reddit.com/r/godot/comments/17ltxjp/comment/l1uz70s/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
 	multiplayer.multiplayer_peer = peer
+	print("Server started!")
 
 func _on_peer_connected(peer: int) -> void:
 	var new_player_inst = player_prefab.instantiate() as PlayerController

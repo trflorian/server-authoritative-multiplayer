@@ -1,6 +1,6 @@
-[gd_scene load_steps=11 format=3 uid="uid://bfrav2bbqpxug"]
+[gd_scene format=3 uid="uid://bfrav2bbqpxug"]
 
-[ext_resource type="Script" path="res://player/player_controller.gd" id="1_ub3x8"]
+[ext_resource type="Script" uid="uid://dsnit2yfvusyo" path="res://player/player_controller.gd" id="1_ub3x8"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6koet"]
 transparency = 1
@@ -54,39 +54,39 @@ properties/2/path = NodePath(".:tick_sync")
 properties/2/spawn = true
 properties/2/replication_mode = 1
 
-[node name="Player" type="Node3D" groups=["player"]]
+[node name="Player" type="Node3D" unique_id=1750218142 groups=["player"]]
 script = ExtResource("1_ub3x8")
 
-[node name="PlayerGhost" type="CharacterBody3D" parent="."]
+[node name="PlayerGhost" type="CharacterBody3D" parent="." unique_id=763562856]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 collision_layer = 2
 collision_mask = 3
 
-[node name="Body" type="MeshInstance3D" parent="PlayerGhost"]
+[node name="Body" type="MeshInstance3D" parent="PlayerGhost" unique_id=1644838764]
 mesh = SubResource("CapsuleMesh_jkfie")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="PlayerGhost"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PlayerGhost" unique_id=850371908]
 shape = SubResource("CapsuleShape3D_ywkg8")
 
-[node name="GhostSync" type="MultiplayerSynchronizer" parent="PlayerGhost"]
+[node name="GhostSync" type="MultiplayerSynchronizer" parent="PlayerGhost" unique_id=1992439585]
 root_path = NodePath("../..")
 replication_interval = 0.05
 replication_config = SubResource("SceneReplicationConfig_jgn1b")
 
-[node name="PlayerBody" type="CharacterBody3D" parent="."]
+[node name="PlayerBody" type="CharacterBody3D" parent="." unique_id=1448845230]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 collision_layer = 4
 collision_mask = 5
 
-[node name="Body" type="MeshInstance3D" parent="PlayerBody"]
+[node name="Body" type="MeshInstance3D" parent="PlayerBody" unique_id=639777639]
 mesh = SubResource("CapsuleMesh_ud6jc")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="PlayerBody"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PlayerBody" unique_id=2051536935]
 shape = SubResource("CapsuleShape3D_ywkg8")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="PlayerBody"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PlayerBody" unique_id=1564508585]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0204223, 0.459778, -0.437381)
 mesh = SubResource("BoxMesh_1ouek")
 
-[node name="InputSync" type="MultiplayerSynchronizer" parent="."]
+[node name="InputSync" type="MultiplayerSynchronizer" parent="." unique_id=1971802015]
 replication_config = SubResource("SceneReplicationConfig_7yws8")
