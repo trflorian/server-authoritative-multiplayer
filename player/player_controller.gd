@@ -2,8 +2,10 @@ extends Node3D
 
 class_name PlayerController
 
-const SPEED = 5.0
-const JUMP_VELOCITY = 9.0
+const SPEED := 5.0
+const JUMP_VELOCITY := 9.0
+const PHYSICS_TICK := 1.0 / 60.0
+const REMOTE_INTERPOLATION_TIME := 50.0
 
 @export var player_id: int
 
@@ -19,10 +21,7 @@ var input_buffer_jumping: Array[bool]
 func _is_local_player() -> bool:
 	return player_id == multiplayer.get_unique_id()
 
-const INTERPOLATION_FRAMES := 2
 var interpolation_prev_timestamp: int = Time.get_ticks_msec()
-var interpolation_pos_buffer: Array[Vector3]
-var interpolation_rot_buffer: Array[Vector3]
 
 func _ready() -> void:
 	if multiplayer.is_server():
@@ -44,32 +43,25 @@ func spawn_randomly() -> void:
 	)
 
 func _on_check_reconcile() -> void:
-	var delta_ticks = tick_sync - tick_sync_server
+	var acknowledged_inputs := clampi(tick_sync - tick_sync_server, 0, input_buffer_dir.size())
 	
 	$PlayerBody.global_position = $PlayerGhost.global_position
 	$PlayerBody.global_rotation = $PlayerGhost.global_rotation
 	$PlayerBody.velocity = linear_velocity_sync_server
 	
-	while len(input_buffer_dir) > delta_ticks:
+	for _i in acknowledged_inputs:
 		input_buffer_dir.pop_front()
 		input_buffer_jumping.pop_front()
 	
-	if is_jumping_sync and input_buffer_jumping[0]:
+	if not input_buffer_jumping.is_empty() and is_jumping_sync and input_buffer_jumping[0]:
 		is_jumping_sync = false
 	
-	while len(input_buffer_dir) > 0:
+	while not input_buffer_dir.is_empty():
 		var input_dir = input_buffer_dir.pop_front()
 		var is_jumping = input_buffer_jumping.pop_front()
-		_move_player($PlayerBody, 1/60.0, is_jumping, input_dir)
+		_move_player($PlayerBody, PHYSICS_TICK, is_jumping, input_dir)
 
 func _interpolate_other() -> void:
-	interpolation_pos_buffer.append($PlayerGhost.global_position)
-	interpolation_rot_buffer.append($PlayerGhost.global_rotation)
-	
-	while len(interpolation_pos_buffer) > INTERPOLATION_FRAMES:
-		interpolation_pos_buffer.pop_front()
-		interpolation_rot_buffer.pop_front()
-	
 	interpolation_prev_timestamp = Time.get_ticks_msec()
 
 func _physics_process(delta: float) -> void:
@@ -84,9 +76,10 @@ func _physics_process(delta: float) -> void:
 		input_buffer_jumping.append(is_jumping_sync)
 		_move_player($PlayerBody, delta, is_jumping_sync, input_dir_sync)
 	else:
-		var dt = Time.get_ticks_msec() - interpolation_prev_timestamp
-		$PlayerBody.global_position = $PlayerBody.global_position.lerp($PlayerGhost.global_position, min(1, dt/50.0))
-		$PlayerBody.global_rotation = $PlayerBody.global_rotation.lerp($PlayerGhost.global_rotation, min(1, dt/50.0))
+		var elapsed_since_sync := Time.get_ticks_msec() - interpolation_prev_timestamp
+		var weight := minf(1.0, elapsed_since_sync / REMOTE_INTERPOLATION_TIME)
+		$PlayerBody.global_position = $PlayerBody.global_position.lerp($PlayerGhost.global_position, weight)
+		$PlayerBody.global_rotation = $PlayerBody.global_rotation.lerp($PlayerGhost.global_rotation, weight)
 		
 	
 	if multiplayer.is_server():
@@ -147,6 +140,5 @@ func _move_player(body: CharacterBody3D, delta: float, is_jumping: bool, input_d
 	body.move_and_slide()
 
 func _look_at_target_interpolated(body: Node3D, look_target: Vector3, weight: float) -> void:
-	var xform := body.transform # your transform
-	xform = xform.looking_at(look_target,Vector3.UP)
-	body.transform = body.transform.interpolate_with(xform,weight)
+	var target_transform := body.transform.looking_at(look_target, Vector3.UP)
+	body.transform = body.transform.interpolate_with(target_transform, weight)
